@@ -1,0 +1,31 @@
+add 1 2 3
+addu 1 2 3
+and 1 2 3
+jr 1
+sll 1 2 3
+slt 1 2 3
+sra 1 2 3
+srav 1 2 3
+srl 1 2 3
+sub 1 2 3
+subu 1 2 3
+xor 1 2 3
+break
+nop
+rte
+addi 1 2 3
+addiu 1 2 3
+andi 1 2 3
+beq 1 2 3
+bne 1 2 3
+lbu 1 2 3
+lhu 1 2 3
+lui 1 2
+lw 1 2 3
+sb 1 2 3
+sh 1 2 3
+slti 1 2 3
+sw 1 2 3
+sxori 1 2 3
+j 1
+jal 1
