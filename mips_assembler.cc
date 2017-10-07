@@ -14,31 +14,26 @@ unordered_map<string, string> type_j;
 
 void initialize_unordered_maps ();
 
-void print_type_r (string, int);
-void print_type_i (string, int);
-void print_type_j (string, int);
-
-string split_binary_string (string, int, int);
+void print_type_r (string&, int);
+void print_type_i (string&, int);
+void print_type_j (string&, int);
 
 void print_instruction (int, string&, string&);
+inline string split_binary_string (string&, int, int);
 
 ifstream input_file;
 ofstream output_file;
 
 int main (int argc, char *argv[]) {
-  string path;
-
   if (argc > 1) {
-    path = argv[1];
+    input_file.open(argv[1]);
   } else {
-    path = "Assembly.txt";
+    input_file.open("Assembly.txt");
   }
-
-  input_file.open(path);
 
   if (!input_file.is_open()) {
     cout << "Input file not found" << endl;
-    cout << "Enter any key to exit" << endl;
+    cout << "Press enter to exit" << endl;
 
     cin.get();
     return 1;
@@ -56,90 +51,70 @@ int main (int argc, char *argv[]) {
   output_file << "BEGIN" << endl << endl;
 
   int counter = 0;
-  string opcode;
-  string instruction;
-  string binary_instruction;
+  string opcode, instruction, binary_instruction;
 
   while (input_file >> opcode) {
-    if (type_r.count(opcode) != 0) {
-      print_type_r(opcode, counter);
+    if (counter == 57) {
+      cout << "Instruction limit exceeded" << endl;
+      cout << "Press enter to exit" << endl;
+  
+      cin.get();
+      return 1;
     }
-    else if (type_i.count(opcode) != 0) {
-      print_type_i(opcode, counter);
-    }
-    else if (type_j.count(opcode) != 0) {
-      print_type_j(opcode, counter);
-    }
-    else {
-      cout << opcode << endl;
-      throw runtime_error("opcode not found");
-    }
-    
-    output_file << endl << endl;
 
-    if (counter++ == 56) {
-      output_file << "Limite excedido" << endl;
+    if (type_r.count(opcode) != 0) {
+      print_type_r(opcode, counter++);
+    } else if (type_i.count(opcode) != 0) {
+      print_type_i(opcode, counter++);
+    } else if (type_j.count(opcode) != 0) {
+      print_type_j(opcode, counter++);
+    } else {
+      cout << "Invalid opcode" << endl;
+      cout << "Press enter to exit" << endl;
+  
+      cin.get();
       return 1;
     }
   }
 
   input_file.close();
-  
+
   instruction = "nop";
   binary_instruction = "00000000000000000000000000000000";
-  
-  for (; counter < 57; counter++) {
-    print_instruction(counter, binary_instruction, instruction);
-    output_file << endl << endl;
+
+  while (counter < 57) {
+    print_instruction(counter++, binary_instruction, instruction);
   }
 
   instruction = "excecao";
   binary_instruction = "00100000000111100000000000000001";
-  print_instruction(counter, binary_instruction, instruction);
-
-  counter++;
-  output_file << endl << endl;
+  print_instruction(counter++, binary_instruction, instruction);
 
   instruction = "excecao";
   binary_instruction = "00000000000000000000000000001101";
-  print_instruction(counter, binary_instruction, instruction);
-  
-  counter++;
-  output_file << endl << endl;
+  print_instruction(counter++, binary_instruction, instruction);
 
   instruction = "nop";
   binary_instruction = "00000000000000000000000000000000";
-  print_instruction(counter, binary_instruction, instruction);
-
-  counter++;
-  output_file << endl << endl;
+  print_instruction(counter++, binary_instruction, instruction);
 
   instruction = "excecao";
   binary_instruction = "00111100000111100000000000000010";
-  print_instruction(counter, binary_instruction, instruction);
-
-  counter++;
-  output_file << endl << endl;
+  print_instruction(counter++, binary_instruction, instruction);
 
   instruction = "excecao";
   binary_instruction = "00000000000111101111010000000010";
-  print_instruction(counter, binary_instruction, instruction);
-
-  counter++;
-  output_file << endl << endl;
+  print_instruction(counter++, binary_instruction, instruction);
 
   instruction = "excecao";
   binary_instruction = "00000000000000000000000000001101";
-  print_instruction(counter, binary_instruction, instruction);
-
-  counter++;
-  output_file << endl << endl;
+  print_instruction(counter++, binary_instruction, instruction);
 
   instruction = "excecao";
   binary_instruction = "00000000000000001111000011100100";
-  print_instruction(counter, binary_instruction, instruction);
+  print_instruction(counter++, binary_instruction, instruction);
 
-  output_file << endl << "END;" << endl;
+  output_file << "END;" << endl;
 
   output_file.close();
 
@@ -151,9 +126,11 @@ void print_instruction (int counter, string &binary_instruction, string &instruc
   output_file << setw(3) << setfill('0') << (counter*4) + 1 << ": " << split_binary_string(binary_instruction, 8,  8) << ';' << endl;
   output_file << setw(3) << setfill('0') << (counter*4) + 2 << ": " << split_binary_string(binary_instruction, 16, 8) << ';' << endl;
   output_file << setw(3) << setfill('0') << (counter*4) + 3 << ": " << split_binary_string(binary_instruction, 24, 8) << ';' << endl;
+
+  output_file << endl << endl;
 }
 
-void print_type_r (string opcode, int counter) {
+void print_type_r (string &opcode, int counter) {
   string instruction = opcode;
   int rd = 0, rs = 0, rt = 0, shamt = 0;
 
@@ -177,7 +154,7 @@ void print_type_r (string opcode, int counter) {
   print_instruction(counter, binary_instruction, instruction);
 }
 
-void print_type_i (string opcode, int counter) {
+void print_type_i (string &opcode, int counter) {
   string instruction = opcode;
   int rt = 0, rs = 0, immediate_offset_address = 0;
 
@@ -195,11 +172,11 @@ void print_type_i (string opcode, int counter) {
     instruction += ' ' + to_string(rt) + ' ' + to_string(rs) + ' ' + to_string(immediate_offset_address);
   }
 
-  string binary_instruction = type_i[opcode]+ bitset<5>(rs).to_string() + bitset<5>(rt).to_string() + bitset<16>(immediate_offset_address).to_string();
+  string binary_instruction = type_i[opcode] + bitset<5>(rs).to_string() + bitset<5>(rt).to_string() + bitset<16>(immediate_offset_address).to_string();
   print_instruction(counter, binary_instruction, instruction);
 }
 
-void print_type_j (string opcode, int counter) {
+void print_type_j (string &opcode, int counter) {
   string instruction = opcode;
   int offset = 0;
 
@@ -210,7 +187,7 @@ void print_type_j (string opcode, int counter) {
   print_instruction(counter, binary_instruction, instruction);
 }
 
-string split_binary_string (string instruction, int position, int size) {
+inline string split_binary_string (string &instruction, int position, int size) {
   return instruction.substr(position, size);
 }
 
