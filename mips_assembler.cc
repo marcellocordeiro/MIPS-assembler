@@ -57,7 +57,7 @@ int main (int argc, char *argv[]) {
     if (counter == 57) {
       cout << "Instruction limit exceeded" << endl;
       cout << "Press enter to exit" << endl;
-  
+
       cin.get();
       return 1;
     }
@@ -71,7 +71,7 @@ int main (int argc, char *argv[]) {
     } else {
       cout << "Invalid opcode" << endl;
       cout << "Press enter to exit" << endl;
-  
+
       cin.get();
       return 1;
     }
@@ -139,6 +139,12 @@ void print_type_r (string &opcode, int counter) {
   } else if (opcode == "jr") {
     input_file >> rs;
     instruction += ' ' + to_string(rs);
+  } else if (opcode == "mult") {
+    input_file >> rs >> rt;
+    instruction += ' ' + to_string(rs) + ' ' + to_string(rt);
+  } else if (opcode == "mfhi" || opcode == "mflo") {
+    input_file >> rd;
+    instruction += ' ' + to_string(rd);
   } else if (opcode == "sll" || opcode == "sra" || opcode == "srl") {
     input_file >> rd >> rt >> shamt;
     instruction += ' ' + to_string(rd) + ' ' + to_string(rt) + ' ' + to_string(shamt);
@@ -200,21 +206,25 @@ void initialize_unordered_maps () {
     {"xor"  , "000000"},
     {"slt"  , "000000"},
     {"subu" , "000000"},
-    
+
     {"sll"  , "000000"},
     {"sra"  , "000000"},
     {"srl"  , "000000"},
-    
+
     {"sllv" , "000000"},
     {"srav" , "000000"},
-    
+
     {"jr"   , "000000"},
-    
+
+    {"mult" , "000000"},
+    {"mfhi" , "000000"},
+    {"mflo" , "000000"},
+
     {"break", "000000"},
     {"nop"  , "000000"},
     {"rte"  , "010000"}
   };
-  
+
   type_r_funct = {
     {"add"  , "100000"},
     {"addu" , "100001"},
@@ -223,16 +233,20 @@ void initialize_unordered_maps () {
     {"xor"  , "100110"},
     {"slt"  , "101010"},
     {"subu" , "100011"},
-    
+
     {"sll"  , "000000"},
     {"sra"  , "000011"},
     {"srl"  , "000010"},
-    
+
     {"sllv" , "000100"},
     {"srav" , "000111"},
-    
+
     {"jr"   , "001000"},
-    
+
+    {"mult" , "011000"},
+    {"mfhi" , "010000"},
+    {"mflo" , "010010"},
+
     {"break", "001101"},
     {"nop"  , "000000"},
     {"rte"  , "010000"}
@@ -247,7 +261,7 @@ void initialize_unordered_maps () {
 
     {"beq"  , "000100"},
     {"bne"  , "000101"},
-    
+
     {"lbu"  , "100100"},
     {"lhu"  , "100101"},
     {"lw"   , "100011"},

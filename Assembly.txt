@@ -29,3 +29,6 @@ sw 1 2 3
 sxori 1 2 3
 j 1
 jal 1
+mult 1 2
+mfhi 1
+mflo 1
